@@ -1,0 +1,13 @@
+{
+    "MongoDb": {
+        "database":"pi-server",
+        "user":"anup",
+        "password":"BUFT0cell*fer5rhet",
+        "host":"pi-server.9i0wb.mongodb.net"
+    },
+    "Security": {
+        "secret":"Ku9ktTfohPAAq9cHpmeFum2kLHTjtyKBFjw7MpQ73FK*yp",
+        "key":"rTQwRzhrWmjJTcfAHfJXzkBcfvnrCYEaKFhavgaQaqrrf"
+    },
+    "Environment":"Dev"
+}
