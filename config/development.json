@@ -9,5 +9,8 @@
         "secret":"Ku9ktTfohPAAq9cHpmeFum2kLHTjtyKBFjw7MpQ73FK*yp",
         "key":"rTQwRzhrWmjJTcfAHfJXzkBcfvnrCYEaKFhavgaQaqrrf"
     },
-    "Environment":"Dev"
+    "Environment":"Dev",
+    "Email":{
+        "key": "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"
+    }
 }
