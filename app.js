@@ -32,6 +32,11 @@ app.use(cookieParser());
  * Custom Routes Middleware
  */
 app.use("/api", apiRoutes);
+
+/**
+ * Passport
+ */
+require("./passport/passport.config");
 /**
  * Custom Middlewares
  */

@@ -10,15 +10,13 @@ const userSchema = new Schema(
     name: {
       type: String,
     },
-    local: {
-      email: {
-        type: String,
-        unique: true,
-        required: true,
-      },
-      hash: { type: String },
-      salt: { type: String },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
     },
+    hash: { type: String },
+    salt: { type: String },
     resetPasswordToken: { type: String, required: false },
     resetPasswordExpires: { type: String, required: false },
   },
@@ -26,18 +24,18 @@ const userSchema = new Schema(
 );
 
 userSchema.methods.setPassword = function (password) {
-  this.local.salt = crypto.randomBytes(16).toString("hex");
-  this.local.hash = crypto
-    .pbkdf2Sync(password, this.local.salt, 128, 128, "sha512")
+  this.salt = crypto.randomBytes(16).toString("hex");
+  this.hash = crypto
+    .pbkdf2Sync(password, this.salt, 128, 128, "sha512")
     .toString("hex");
 };
 
 userSchema.methods.validatePassword = function (password) {
   const hash = crypto
-    .pbkdf2Sync(password, this.local.salt, 128, 128, "sha512")
+    .pbkdf2Sync(password, this.salt, 128, 128, "sha512")
     .toString("hex");
-
-  return this.local.hash === hash;
+  console.log(this.hash === hash);
+  return this.hash === hash;
 };
 
 userSchema.methods.generateJWT = function () {
@@ -58,24 +56,23 @@ userSchema.methods.generateJWT = function () {
 userSchema.methods.toAuthJSON = function (token) {
   return {
     _id: this._id,
-    email: this.local.email,
+    email: this.email,
     token: token,
     username: this.username,
   };
 };
 
-const User = mongoose.model("User", userSchemas);
+const User = mongoose.model("User", userSchema);
 
 const validateUser = async (user) => {
   const schema = Joi.object({
-    name: Joi.string(),
-    local: Joi.object({
-      email: Joi.string().required(),
-      hash: Joi.string(),
-      salt: Joi.string(),
-    }),
-    resetPasswordToken: Joi.string(),
-    resetPasswordExpires: Joi.string(),
+    name: Joi.string().min(3).trim().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    hash: Joi.string().optional(),
+    salt: Joi.string().optional(),
+    resetPasswordToken: Joi.string().optional(),
+    resetPasswordExpires: Joi.string().optional(),
   });
   try {
     await schema.validateAsync(user);
