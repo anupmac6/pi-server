@@ -15,6 +15,9 @@ const bibleRoutes = require("./bible-365/bible.routes");
 //* Import Auth Routes
 const authRoutes = require("./auth/auth.routes");
 
+//* Import Cron Routes
+const cronRoutes = require("./cron/cron.routes");
+
 //[] /api/health
 router.use("/health", healthRoutes);
 
@@ -23,5 +26,8 @@ router.use("/bible-365", bibleRoutes);
 
 //[] /api/auth
 router.use("/auth", authRoutes);
+
+//[] /api/cron
+router.use("/cron", cronRoutes);
 
 module.exports = router;

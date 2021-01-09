@@ -13,4 +13,18 @@ router.get("/", ctrl.getBiblePlanAll);
 // [GET] /api/bible-365/bible-plan/:userId
 router.get("/:userId", ctrl.getBiblePlanByUser);
 
+// unsubscribe
+
+// pause
+
+// change format
+
+// change time
+
+// change translation
+
+// change bible time period view
+
+// change start day
+
 module.exports = router;

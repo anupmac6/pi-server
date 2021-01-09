@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { BiblePlan, validateBiblePlan } = require("../../../models/bibleplan");
 const { User } = require("../../../models/user");
+const agenda = require("../../../cron-jobs/cron.job");
 
 const makeSureBiblePlanDoesNotExistForUser = async (user) => {
   const biblePlan = await BiblePlan.findOne({ user });
@@ -30,6 +31,12 @@ exports.getBiblePlanAll = async () => {
     .select(
       "includeAdventureBibleTimePeriod bibleTranslation receiveFormat preferredTime isPaused isUnsubscribed user"
     );
+  const weeklyReport = agenda.create("send email report", {
+    to: "example@example.com",
+  });
+  await agenda.start();
+  await weeklyReport.repeatEvery("10 second").save();
+
   return biblePlans;
 };
 
