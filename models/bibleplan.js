@@ -28,7 +28,7 @@ const biblePlanSchema = new Schema(
     },
     preferredTime: {
       type: Number,
-      default: 6,
+      default: 1,
     },
     isPaused: {
       type: Boolean,
@@ -52,6 +52,21 @@ const biblePlanSchema = new Schema(
   }
 );
 
+/**
+ * RECEIVE FORMAT
+ * 1 = EMAIL
+ * 2 = PDF
+ * 3 = EMAIL & PDF
+ */
+
+/**
+ * PREFERRED TIME
+ * 0 = Midnight
+ * 1 = Early Morning
+ * 2 = Morning
+ * 3 = Evening
+ * 4 = Night
+ */
 const BiblePlan = mongoose.model("Bibleplan", biblePlanSchema);
 
 const validateBiblePlan = async (biblePlan) => {

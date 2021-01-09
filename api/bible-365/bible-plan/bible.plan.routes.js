@@ -13,13 +13,20 @@ router.get("/", ctrl.getBiblePlanAll);
 // [GET] /api/bible-365/bible-plan/:userId
 router.get("/:userId", ctrl.getBiblePlanByUser);
 
-// unsubscribe
+// [GET] /api/bible-365/bible-plan/:userId/unsubscribe
+router.get("/:userId/unsubscribe", ctrl.unsubscribe);
 
-// pause
+// [GET] /api/bible-365/bible-plan/:userId/pause-plan/:pauseDuration
+router.get("/:userId/pause-plan/:pauseDuration", ctrl.pauseBiblePlan);
 
-// change format
+// [GET] /api/bible-365/bible-plan/:userId/resume-plan
+router.get("/:userId/resume-plan", ctrl.resumeBiblePlan);
 
-// change time
+// [GET] /api/bible-365/bible-plan/:userId/receive-format/:formatId
+router.get("/:userId/receive-format/:formatId", ctrl.changeReceiveFormat);
+
+// [GET] /api/bible-365/bible-plan/:userId/preferred-time/:preferredTime
+router.get("/:userId/preferred-time/:preferredTime", ctrl.changePreferredTime);
 
 // change translation
 

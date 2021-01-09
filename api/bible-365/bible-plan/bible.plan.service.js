@@ -63,3 +63,66 @@ exports.getBiblePlanByUser = async (userId) => {
   }
   return biblePlan;
 };
+
+exports.unsubscribeUser = async (userId) => {
+  //* Get the bible plan
+  const biblePlan = await this.getBiblePlanByUser(userId);
+  //* Update the bible plan
+  biblePlan.isUnsubscribed = true;
+  //* Save the bible plan
+  const response = await biblePlan.save();
+  return response;
+};
+
+exports.pauseBiblePlanForUser = async (userId, pauseDuration) => {
+  if (isNaN(+pauseDuration)) {
+    throw new Error("Invalid paused for days.");
+  }
+  //* Get the bible plan
+  const biblePlan = await this.getBiblePlanByUser(userId);
+  //* Update the bible plan
+  biblePlan.isPaused = true;
+  biblePlan.pausedFor = +pauseDuration;
+  //* Save the bible plan
+  const response = await biblePlan.save();
+  return response;
+};
+
+exports.resumeBiblePlanForUser = async (userId) => {
+  //* Get the bible plan
+  const biblePlan = await this.getBiblePlanByUser(userId);
+  //* Update the bible plan
+  biblePlan.isPaused = false;
+  biblePlan.pausedFor = 0;
+  //* Save the bible plan
+  const response = await biblePlan.save();
+  return response;
+};
+
+exports.changeReceiveFormatForUser = async (userId, receiveFormat) => {
+  //* Validate the receive format
+  if (+receiveFormat <= 0 || +receiveFormat >= 4 || isNaN(+receiveFormat)) {
+    throw new Error("Invalid receive format submitted");
+  }
+  //* Get the bible plan
+  const biblePlan = await this.getBiblePlanByUser(userId);
+  //* Update the bible plan
+  biblePlan.receiveFormat = +receiveFormat;
+  //* Save the bible plan
+  const response = await biblePlan.save();
+  return response;
+};
+
+exports.changePreferredTimeForUser = async (userId, preferredTime) => {
+  //* Validate the preferred time
+  if (+preferredTime < 0 || +preferredTime >= 5 || isNaN(+preferredTime)) {
+    throw new Error("Invalid preferred time submitted");
+  }
+  //* Get the bible plan
+  const biblePlan = await this.getBiblePlanByUser(userId);
+  //* Update the bible plan
+  biblePlan.preferredTime = +preferredTime;
+  //* Save the bible plan
+  const response = await biblePlan.save();
+  return response;
+};
