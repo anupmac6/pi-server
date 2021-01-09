@@ -1,18 +1,16 @@
 const agenda = require("../../cron-jobs/cron.job");
+const biblePlanWorker = require("../../cron-jobs/workers/bible.in.a.year.worker");
 
 exports.createBibleInAYearMidnightJob = async () => {
   agenda.define(
     "bible in a year midnight",
     { priority: "high", concurrency: 10 },
     async (job) => {
-      console.log("run every midnight");
+      await biblePlanWorker.bibleInAYearWorker(1);
     }
   );
 
-  const response = await agenda.every(
-    "00 00 * * *",
-    "bible in a year midnight"
-  );
+  const response = await agenda.every("30 seconds", "bible in a year midnight");
   return response;
 };
 

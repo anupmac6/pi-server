@@ -3,7 +3,7 @@ const { ScheduleData } = require("../../../models/scheduledata");
 const axios = require("axios");
 const { response } = require("express");
 const jsdom = require("jsdom");
-const { map, lowerCase } = require("lodash");
+const { map, lowerCase, trim } = require("lodash");
 const pdf = require("html-pdf");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(
@@ -105,6 +105,9 @@ const generateScheduleDataObject = async (schedule) => {
 };
 
 const getBibleTextByVerse = async (verse) => {
+  if (!trim(verse)) {
+    return null;
+  }
   try {
     let updatedVerse = verse.replace(/\s+/g, "");
     const response = await axios.default.get(

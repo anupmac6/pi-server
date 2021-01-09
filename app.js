@@ -19,8 +19,6 @@ const errorHandler = require("./middleware/error.handler");
 // import routes for '/api'
 const apiRoutes = require("./api");
 
-const agenda = require("./cron-jobs/cron.job");
-agenda.start();
 app.use(cors());
 
 app.use(helmet());
@@ -29,6 +27,8 @@ app.use(bodyParser.json());
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+require("./cron-jobs/cron.job");
 
 /**
  * Custom Routes Middleware

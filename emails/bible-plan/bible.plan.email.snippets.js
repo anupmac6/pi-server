@@ -1,3 +1,5 @@
+const { map } = require("lodash");
+
 const getBiblePlanHeading = () => {
   return `
 <div style="background-color:#ffffff;">
@@ -345,7 +347,7 @@ const getBiblePlanFirstReading = (bibleVerse, data) => {
     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; font-family: Arial, sans-serif"><![endif]-->
     <div style="color:#515c74;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;line-height:1.2;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;">
     <div style="line-height: 1.2; font-size: 12px; color: #515c74; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; mso-line-height-alt: 14px;">
-    <p style="text-align: center; line-height: 1.2; word-break: break-word; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;"><span style="">FIRST READING</span></span></p>
+    <p style="text-align: center; line-height: 1.2; word-break: break-word; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;"><span style=""></span></span></p>
     </div>
     </div>
     <!--[if mso]></td></tr></table><![endif]-->
@@ -459,7 +461,7 @@ const getBiblePlanSecondReading = (bibleVerse, data) => {
     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; font-family: Arial, sans-serif"><![endif]-->
     <div style="color:#515c74;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;line-height:1.2;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;">
     <div style="line-height: 1.2; font-size: 12px; color: #515c74; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; mso-line-height-alt: 14px;">
-    <p style="text-align: center; line-height: 1.2; word-break: break-word; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;"><span style="">SECOND READING</span></span></p>
+    <p style="text-align: center; line-height: 1.2; word-break: break-word; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;"><span style=""></span></span></p>
     </div>
     </div>
     <!--[if mso]></td></tr></table><![endif]-->
@@ -572,9 +574,7 @@ const getBiblePlanPsalm = (secondReading, bibleVerse, data) => {
     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; font-family: Arial, sans-serif"><![endif]-->
     <div style="color:#515c74;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;line-height:1.2;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;">
     <div style="line-height: 1.2; font-size: 12px; color: #515c74; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; mso-line-height-alt: 14px;">
-    <p style="text-align: center; line-height: 1.2; word-break: break-word; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;"><span style="">${
-      isPslam ? "PSALM" : "PROVERBS"
-    }</span></span></p>
+    <p style="text-align: center; line-height: 1.2; word-break: break-word; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;"><span style=""></span></span></p>
     </div>
     </div>
     <!--[if mso]></td></tr></table><![endif]-->
@@ -951,22 +951,34 @@ exports.getBiblePlanEmailTemplate = (biblePlan, scheduleData) => {
     scheduleData.schedule.period,
     "hello"
   );
-  //* First Reading
-  const firstReading = getBiblePlanFirstReading(
-    scheduleData.schedule.firstReading.verse,
-    scheduleData.firstReadingData.verse
-  );
-  //* Second Reading
-  const secondReading = getBiblePlanSecondReading(
-    scheduleData.schedule.secondReading.verse,
-    scheduleData.secondReadingData.verse
-  );
+  //* Get First Readings
+  const firstReading = map(
+    scheduleData.schedule.firstReading,
+    (reading, index) => {
+      return getBiblePlanFirstReading(
+        reading.verse,
+        scheduleData.firstReadingData[index].verse
+      );
+    }
+  ).join(" ");
+  //* Get Second Readings
+  const secondReading = map(
+    scheduleData.schedule.secondReading,
+    (reading, index) => {
+      return getBiblePlanSecondReading(
+        reading.verse,
+        scheduleData.secondReadingData[index].verse
+      );
+    }
+  ).join(" ");
   //* Psalm
-  const psalm = getBiblePlanPsalm(
-    scheduleData.schedule.secondReading.verse,
-    scheduleData.schedule.psalm.verse,
-    scheduleData.psalmData.verse
-  );
+  const psalm = map(scheduleData.schedule.psalm, (psalm, index) => {
+    return getBiblePlanPsalm(
+      scheduleData.schedule.secondReading[0].verse,
+      psalm.verse,
+      scheduleData.psalmData[index].verse
+    );
+  }).join(" ");
   //* Thank you note
   const thankYou = getBiblePlanThankYouNote();
   //* Footer
