@@ -31,12 +31,12 @@ exports.createBibleInAYearEarlyMorningJob = async () => {
     "bible in a year early morning",
     { priority: "high", concurrency: 10 },
     async (job) => {
-      console.log("run every early morning");
+      await biblePlanWorker.bibleInAYearWorker(1);
     }
   );
 
   const response = await agenda.every(
-    "00 05 * * *",
+    "30 seconds",
     "bible in a year early morning"
   );
   return response;
@@ -51,7 +51,7 @@ exports.createBibleInAYearMorningJob = async () => {
     "bible in a year morning",
     { priority: "high", concurrency: 10 },
     async (job) => {
-      console.log("run every morning");
+      await biblePlanWorker.bibleInAYearWorker(2);
     }
   );
 
@@ -68,7 +68,7 @@ exports.createBibleInAYearEveningJob = async () => {
     "bible in a year evening",
     { priority: "high", concurrency: 10 },
     async (job) => {
-      console.log("run every evening");
+      await biblePlanWorker.bibleInAYearWorker(3);
     }
   );
 
@@ -85,7 +85,7 @@ exports.createBibleInAYearNightJob = async () => {
     "bible in a year night",
     { priority: "high", concurrency: 10 },
     async (job) => {
-      console.log("run every night");
+      await biblePlanWorker.bibleInAYearWorker(4);
     }
   );
 

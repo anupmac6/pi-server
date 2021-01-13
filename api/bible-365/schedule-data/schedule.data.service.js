@@ -26,7 +26,11 @@ const getScheduleDataByScheduleId = async (scheduleId) => {
     .populate("schedule");
 
   if (!scheduleData) {
-    const newScheduleData = await createScheduleDataByScheduleId(scheduleId);
+    await createScheduleDataByScheduleId(scheduleId);
+    const newScheduleData = await ScheduleData.findOne()
+      .where("schedule")
+      .equals(scheduleId)
+      .populate("schedule");
     return newScheduleData;
   }
 

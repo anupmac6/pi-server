@@ -11,7 +11,7 @@ exports.sendEmail = async (to, subject, email) => {
     html: email,
   };
   try {
-    const response = sgMail.send(msg);
+    const response = await sgMail.send(msg);
     return response;
   } catch (error) {
     console.error(error);

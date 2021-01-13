@@ -41,6 +41,14 @@ const biblePlanSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    isFinished: {
+      type: Boolean,
+      default: false,
+    },
+    isCancelled: {
+      type: Boolean,
+      default: false,
+    },
     currentDay: {
       type: Number,
       default: 1,
@@ -84,6 +92,8 @@ const validateBiblePlan = async (biblePlan) => {
     isPaused: Joi.boolean().optional(),
     pausedFor: Joi.number().optional(),
     isUnsubscribed: Joi.boolean().optional(),
+    isFinished: Joi.boolean().optional(),
+    isCancelled: Joi.boolean().optional(),
     currentDay: Joi.number().optional(),
     user: Joi.string().required(),
   });

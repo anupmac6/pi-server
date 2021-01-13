@@ -1,4 +1,4 @@
-const { map } = require("lodash");
+const { map, forEach } = require("lodash");
 
 const getBiblePlanHeading = () => {
   return `
@@ -310,9 +310,10 @@ const getBiblePlanTimelinePeriod = (timeline, summary) => {
     </div>`;
 };
 
-const getBiblePlanFirstReading = (bibleVerse, data) => {
+const getBiblePlanFirstReading = (bibleVerse, data, isEven) => {
+  let background = isEven ? "transparent" : "#ffffff";
   return `
-    <div style="background-color:transparent;">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -334,7 +335,7 @@ const getBiblePlanFirstReading = (bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:transparent;">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -368,7 +369,7 @@ const getBiblePlanFirstReading = (bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:transparent;">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -398,7 +399,7 @@ const getBiblePlanFirstReading = (bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:transparent;">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -421,12 +422,13 @@ const getBiblePlanFirstReading = (bibleVerse, data) => {
     </div>`;
 };
 
-const getBiblePlanSecondReading = (bibleVerse, data) => {
+const getBiblePlanSecondReading = (bibleVerse, data, isEven) => {
   if (!bibleVerse) {
     return ``;
   }
+  let background = isEven ? "transparent" : "#ffffff";
   return `
-    <div style="background-color:#ffffff;">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -448,7 +450,7 @@ const getBiblePlanSecondReading = (bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:#ffffff;">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -482,7 +484,7 @@ const getBiblePlanSecondReading = (bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:#ffffff;">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -512,7 +514,7 @@ const getBiblePlanSecondReading = (bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:#ffffff;">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -536,10 +538,11 @@ const getBiblePlanSecondReading = (bibleVerse, data) => {
     </div>`;
 };
 
-const getBiblePlanPsalm = (secondReading, bibleVerse, data) => {
+const getBiblePlanPsalm = (secondReading, bibleVerse, data, isEven) => {
   const isPslam = true;
+  let background = isEven ? "transparent" : "#ffffff";
   return `
-    <div style="background-color:${secondReading ? "transparent" : "#ffffff"};">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -561,7 +564,7 @@ const getBiblePlanPsalm = (secondReading, bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:${secondReading ? "transparent" : "#ffffff"};">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -595,7 +598,7 @@ const getBiblePlanPsalm = (secondReading, bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:${secondReading ? "transparent" : "#ffffff"};">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -625,7 +628,7 @@ const getBiblePlanPsalm = (secondReading, bibleVerse, data) => {
     </div>
     </div>
     </div>
-    <div style="background-color:${secondReading ? "transparent" : "#ffffff"};">
+    <div style="background-color:${background};">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
     <div style="border-collapse: collapse;display: table;width: 100%;background-color:transparent;">
     <!--[if (mso)|(IE)]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:transparent;"><tr><td align="center"><table cellpadding="0" cellspacing="0" border="0" style="width:680px"><tr class="layout-full-width" style="background-color:transparent"><![endif]-->
@@ -942,6 +945,7 @@ ${content}
 };
 
 exports.getBiblePlanEmailTemplate = (biblePlan, scheduleData) => {
+  let isEven = true;
   //* Header
   const heading = getBiblePlanHeading();
   //* Day Information
@@ -951,34 +955,43 @@ exports.getBiblePlanEmailTemplate = (biblePlan, scheduleData) => {
     scheduleData.schedule.period,
     "hello"
   );
+  let firstReading = "";
   //* Get First Readings
-  const firstReading = map(
-    scheduleData.schedule.firstReading,
-    (reading, index) => {
-      return getBiblePlanFirstReading(
-        reading.verse,
-        scheduleData.firstReadingData[index].verse
-      );
-    }
-  ).join(" ");
-  //* Get Second Readings
-  const secondReading = map(
-    scheduleData.schedule.secondReading,
-    (reading, index) => {
-      return getBiblePlanSecondReading(
-        reading.verse,
-        scheduleData.secondReadingData[index].verse
-      );
-    }
-  ).join(" ");
-  //* Psalm
-  const psalm = map(scheduleData.schedule.psalm, (psalm, index) => {
-    return getBiblePlanPsalm(
-      scheduleData.schedule.secondReading[0].verse,
-      psalm.verse,
-      scheduleData.psalmData[index].verse
+  forEach(scheduleData.schedule.firstReading, (reading, index) => {
+    firstReading += getBiblePlanFirstReading(
+      reading.verse,
+      scheduleData.firstReadingData[index].verse,
+      isEven
     );
-  }).join(" ");
+    if (reading.verse) {
+      isEven = !isEven;
+    }
+  });
+  //* Get Second Readings
+  let secondReading = "";
+  forEach(scheduleData.schedule.secondReading, (reading, index) => {
+    secondReading += getBiblePlanSecondReading(
+      reading.verse,
+      scheduleData.secondReadingData[index].verse,
+      isEven
+    );
+    if (reading.verse) {
+      isEven = !isEven;
+    }
+  });
+  //* Psalm
+  let psalm = "";
+  forEach(scheduleData.schedule.psalm, (reading, index) => {
+    psalm += getBiblePlanPsalm(
+      scheduleData.schedule.secondReading[0].verse,
+      reading.verse,
+      scheduleData.psalmData[index].verse,
+      isEven
+    );
+    if (reading.verse) {
+      isEven = !isEven;
+    }
+  });
   //* Thank you note
   const thankYou = getBiblePlanThankYouNote();
   //* Footer

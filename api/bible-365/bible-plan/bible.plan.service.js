@@ -28,7 +28,7 @@ exports.getBiblePlanAll = async () => {
   const biblePlans = await BiblePlan.find({})
     .populate("user", "name email")
     .select(
-      "includeAdventureBibleTimePeriod bibleTranslation receiveFormat preferredTime isPaused isUnsubscribed user"
+      "includeAdventureBibleTimePeriod bibleTranslation receiveFormat preferredTime isPaused isUnsubscribed isFinished isCancelled user"
     );
 
   return biblePlans;
@@ -50,7 +50,7 @@ exports.getBiblePlanByUser = async (userId) => {
   })
     .populate("user", "name email")
     .select(
-      "includeAdventureBibleTimePeriod bibleTranslation receiveFormat preferredTime isPaused isUnsubscribed user"
+      "includeAdventureBibleTimePeriod bibleTranslation receiveFormat preferredTime isPaused isUnsubscribed isFinished isCancelled user"
     );
   if (!biblePlan) {
     throw new Error("User not subscribed to Bible plan.");
@@ -129,6 +129,10 @@ exports.getAllBiblePlansForCronJob = async (preferredTime) => {
     .where("isUnsubscribed")
     .equals(false)
     .where("isPaused")
+    .equals(false)
+    .where("isFinished")
+    .equals(false)
+    .where("isCancelled")
     .equals(false)
     .populate("user", "name email");
 
