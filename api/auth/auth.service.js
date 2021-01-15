@@ -28,7 +28,7 @@ exports.signup = async (user) => {
   newUser.setPassword(user.password);
   //* save the new user
   const response = await newUser.save();
-  return response;
+  return { _id: response._id };
 };
 const isValidEmail = async (email) => {
   const schema = Joi.string().email().required();

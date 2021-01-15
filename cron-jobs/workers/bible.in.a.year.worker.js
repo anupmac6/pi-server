@@ -1,10 +1,13 @@
-const { map } = require("lodash");
+const { map, trim } = require("lodash");
 const biblePlanService = require("../../api/bible-365/bible-plan/bible.plan.service");
 const scheduleDataService = require("../../api/bible-365/schedule-data/schedule.data.service");
 const emailBuilder = require("../../emails/bible-plan/bible.plan.email.snippets");
 const email = require("../../emails/email.send");
 const { BiblePlanError } = require("../../models/bibleplanerror");
 const { BiblePlanHistory } = require("../../models/bibleplanhistory");
+const moment = require("moment");
+const { User } = require("../../models/user");
+const { BiblePlan } = require("../../models/bibleplan");
 // 1. Get the time worker is running
 // 2. Get all the bible plans with that time preferred
 //     Apply Filters
@@ -27,9 +30,9 @@ const getAllBiblePlans = async (timeToRun) => {
     );
     return biblePlans;
   } catch (error) {
-    const messsage = "Failed to get all the bible plans.";
+    const message = "Failed to get all the bible plans.";
     await saveError({ message });
-    throw new Error(messsage);
+    throw new Error(message);
   }
 };
 
@@ -46,25 +49,18 @@ const getSchedule = async (scheduleId, biblePlan) => {
   }
 };
 
-const generateEmailContent = async (biblePlan, scheduleData) => {
-  try {
-    const content = emailBuilder.getBiblePlanEmailTemplate(
-      biblePlan,
-      scheduleData
-    );
-    return content;
-  } catch (error) {
-    const message = "Failed to generate email content";
-    const user = biblePlan.user._id;
-    const planDay = +biblePlan.currentDay;
-    await saveError({ user, planDay, error });
-    throw new Error(message);
-  }
+const generateEmailContent = (biblePlan, scheduleData) => {
+  const content = emailBuilder.getBiblePlanEmailTemplate(
+    biblePlan,
+    scheduleData
+  );
+  return content;
 };
 
-const sendEmail = async (to, subject, content) => {
+const sendEmail = async (to, subject, content, biblePlan) => {
   try {
     const response = await email.sendEmail(to, subject, content);
+
     return response;
   } catch (error) {
     const message = "Failed to send email";
@@ -96,7 +92,7 @@ const saveToHistory = async (biblePlan) => {
   try {
     const history = new BiblePlanHistory({
       user: biblePlan.user._id,
-      planDay: +biblePlan.currentDay,
+      planDay: +biblePlan.currentDay - 1,
     });
     await history.save();
   } catch (error) {
@@ -115,7 +111,88 @@ const saveError = async (doc) => {
     throw new Error("Failed to save error.");
   }
 };
+const makeSureUserIsNotGettingSecondEmail = async (biblePlan) => {
+  try {
+    const biblePlanHistory = await BiblePlanHistory.findOne({
+      user: biblePlan.user._id,
+      createdAt: {
+        $gte: moment()
+          .utcOffset(0)
+          .set({ hour: 0, minute: 0, second: 0, millisecond: 0 }),
+      },
+    });
 
+    if (biblePlanHistory) {
+      throw new Error("User has already received the email for today.");
+    }
+  } catch (error) {
+    const user = biblePlan.user._id;
+    const planDay = +biblePlan.currentDay;
+    await saveError({ user, planDay, error });
+    throw new Error(error);
+  }
+};
+const getUserByEmail = async (to) => {
+  try {
+    const user = await User.findOne().where("email").equals(trim(to));
+    if (!user) {
+      throw new Error("User does not exists");
+    }
+    return user;
+  } catch (error) {
+    const message = "User does not exists.";
+    await saveError({ message });
+    throw new Error(message);
+  }
+};
+const getBiblePlanByUser = async (userId) => {
+  try {
+    const biblePlan = BiblePlan.findOne()
+      .where("user")
+      .equals(userId)
+      .populate("user");
+    if (!biblePlan) {
+      throw new Error("Bible Plan does not exists");
+    }
+    return biblePlan;
+  } catch (error) {
+    const message = "Bible Plan does not exists.";
+    await saveError({ message });
+    throw new Error(message);
+  }
+};
+exports.bibleInAYearEmailAfterSubscribe = async (to) => {
+  try {
+    //* Get user info by email
+    const user = await getUserByEmail(to);
+    //* Get bible plan for the user
+    const biblePlan = await getBiblePlanByUser(user._id);
+    //* Process bible plan
+    await processBiblePlan(biblePlan);
+    return to;
+  } catch (error) {
+    return "fail";
+  }
+};
+const processBiblePlan = async (biblePlan) => {
+  //* Make sure user does not get two emails a day due to signup today
+  await makeSureUserIsNotGettingSecondEmail(biblePlan);
+  //* - Get schedule information
+  const scheduleData = await getSchedule(+biblePlan.currentDay, biblePlan);
+  //* - Generate email content for the schedule
+  const emailContent = generateEmailContent(biblePlan, scheduleData);
+  //* - Send Email
+  await sendEmail(
+    biblePlan.user.email,
+    `The Bible in a Year - Day ${+biblePlan.currentDay}`,
+    emailContent,
+    biblePlan
+  );
+  //* - Update current day of bible plan
+  await updateCurrentDay(biblePlan);
+  //* - Add to History
+  await saveToHistory(biblePlan);
+};
 exports.bibleInAYearWorker = async (timeToRun) => {
   try {
     //* - Get bible plans
@@ -123,24 +200,8 @@ exports.bibleInAYearWorker = async (timeToRun) => {
     //* Apply algorithm for each of the bible plan
     await Promise.all(
       map(biblePlans, async (biblePlan) => {
-        //* - Get schedule information
-        const scheduleData = await getSchedule(
-          +biblePlan.currentDay,
-          biblePlan
-        );
-        //* - Generate email content for the schedule
-        const emailContent = generateEmailContent(biblePlan, scheduleData);
-        //* - Send Email
-        await sendEmail(
-          biblePlan.user.email,
-          `Bible in a year - Day ${+biblePlan.currentDay}`,
-          emailContent,
-          biblePlan
-        );
-        //* - Update current day of bible plan
-        await updateCurrentDay(biblePlan);
-        //* - Add to History
-        await saveToHistory(biblePlan);
+        // Process bible plan
+        await processBiblePlan(biblePlan);
         return biblePlan;
       })
     );

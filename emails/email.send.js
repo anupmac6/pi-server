@@ -19,6 +19,6 @@ exports.sendEmail = async (to, subject, email) => {
     if (error.response) {
       console.error(error.response.body);
     }
-    return error;
+    throw error;
   }
 };

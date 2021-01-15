@@ -10,6 +10,9 @@ router.post("/", ctrl.createBiblePlan);
 // [GET] /api/bible-365/bible-plan
 router.get("/", ctrl.getBiblePlanAll);
 
+// [POST] /api/bible-365/bible-plan/subscribe
+router.post("/subscribe", ctrl.subscribe);
+
 // [GET] /api/bible-365/bible-plan/:userId
 router.get("/:userId", ctrl.getBiblePlanByUser);
 

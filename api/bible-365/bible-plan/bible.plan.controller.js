@@ -64,3 +64,10 @@ exports.changePreferredTime = async (req, res, next) => {
     .then((result) => next(result))
     .catch((err) => next(err));
 };
+
+exports.subscribe = async (req, res, next) => {
+  await biblePlan
+    .subscribe(req.body.email)
+    .then((result) => next(result))
+    .catch((err) => next(err));
+};

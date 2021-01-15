@@ -198,7 +198,7 @@ const getBiblePlanDayInformation = (dayNumber) => {
 </div>`;
 };
 
-const getBiblePlanTimelinePeriod = (timeline, summary) => {
+const getBiblePlanTimelinePeriod = (timeline, summary, showTimePeriod) => {
   return `
     <div style="background-color:#31d0bd;">
     <div class="block-grid" style="min-width: 320px; max-width: 680px; overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; Margin: 0 auto; background-color: transparent;">
@@ -235,7 +235,9 @@ const getBiblePlanTimelinePeriod = (timeline, summary) => {
     <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 0px; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; font-family: Arial, sans-serif"><![endif]-->
     <div style="color:#515c74;font-family:'Helvetica Neue', Helvetica, Arial, sans-serif;line-height:1.2;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px;">
     <div style="line-height: 1.2; font-size: 12px; color: #515c74; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; mso-line-height-alt: 14px;">
-    <p style="text-align: center; line-height: 1.2; word-break: break-word; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;"><span style="">TIME PERIOD</span></span></p>
+    <p style="text-align: center; line-height: 1.2; word-break: break-word; font-size: 14px; mso-line-height-alt: 17px; margin: 0;"><span style="font-size: 14px;"><span style="">${
+      showTimePeriod ? "TIME PERIOD" : ""
+    }</span></span></p>
     </div>
     </div>
     <!--[if mso]></td></tr></table><![endif]-->
@@ -944,6 +946,25 @@ ${content}
 </html>`;
 };
 
+exports.getBiblePlanWelcomeEmailTemplate = () => {
+  //* Header
+  const heading = getBiblePlanHeading();
+  //* Welcome message
+  const welcome = getBiblePlanTimelinePeriod(
+    "Welcome!",
+    "Thank you for subscribing to <em>The Bible in a Year</em>. Join us as we read the Bible each day. Regular Bible reading is one of the most important habits you can develop. This daily Bible reading plan will give you all the benefits of a steady diet of God's Word as you read through Scripture in a year. The whole Bible is arranged into 365 daily readings, and a Psalm or Proverb for each day.",
+    false
+  );
+  //* Footer
+  const footer = getBiblePlanFooter();
+  //* Merge the content
+  const content = `${heading} 
+    ${welcome}
+    ${footer}`;
+  //* Wrap everything in email
+  const email = wrapBiblePlanContentInEmail(content);
+  return email;
+};
 exports.getBiblePlanEmailTemplate = (biblePlan, scheduleData) => {
   let isEven = true;
   //* Header
@@ -953,7 +974,8 @@ exports.getBiblePlanEmailTemplate = (biblePlan, scheduleData) => {
   //* Timeline Period
   const timelinePeriod = getBiblePlanTimelinePeriod(
     scheduleData.schedule.period,
-    "hello"
+    "hello",
+    true
   );
   let firstReading = "";
   //* Get First Readings
@@ -997,15 +1019,14 @@ exports.getBiblePlanEmailTemplate = (biblePlan, scheduleData) => {
   //* Footer
   const footer = getBiblePlanFooter();
   //* Merge the content
-  const content =
-    heading +
-    dayInformation +
-    timelinePeriod +
-    firstReading +
-    secondReading +
-    psalm +
-    thankYou +
-    footer;
+  const content = `${heading} 
+    ${dayInformation}
+    ${timelinePeriod}
+    ${firstReading}
+    ${secondReading}
+    ${psalm}
+    ${thankYou}
+    ${footer}`;
   //* Wrap everything in email
   const email = wrapBiblePlanContentInEmail(content);
 
