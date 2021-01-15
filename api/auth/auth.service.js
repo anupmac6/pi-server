@@ -5,6 +5,8 @@ const crypto = require("crypto");
 const config = require("config");
 const EMAIL = config.get("Email");
 const sgMail = require("@sendgrid/mail");
+const { validateSubscriber, Subscriber } = require("../../models/subscriber");
+const { subscribe } = require("./auth.routes");
 sgMail.setApiKey(EMAIL.key);
 
 const checkUserExist = async (email) => {
@@ -143,4 +145,14 @@ exports.changePassword = async (request) => {
     request.token
   );
   return user;
+};
+exports.subsribeBiblePlan = async (request) => {
+  //* Validate request
+  const error = await validateSubscriber(request);
+  if (error) {
+    throw error;
+  }
+  const subscriber = new Subscriber(request);
+  const response = await subscriber.save();
+  return response;
 };

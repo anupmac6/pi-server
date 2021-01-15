@@ -69,3 +69,17 @@ exports.deleteBibleInAYearNight = async (req, res, next) => {
     .then((result) => next(result))
     .catch((err) => next(err));
 };
+
+exports.checkForNewSubscriber = async (req, res, next) => {
+  await cron
+    .createCheckSubscriberListJob()
+    .then((result) => next(result))
+    .catch((err) => next(err));
+};
+
+exports.deleteCheckForNewSubscriber = async (req, res, next) => {
+  await cron
+    .deleteCheckSubscriberListJob()
+    .then((result) => next(result))
+    .catch((err) => next(err));
+};

@@ -4,6 +4,9 @@ const router = express.Router();
 
 const ctrl = require("./auth.controller");
 
+//[GET] /api/auth/subscribe/bible-plan
+router.post("/subscribe/bible-plan", ctrl.subscribeBiblePlan);
+
 //[POST] /api/auth/login
 router.post("/login", ctrl.login);
 

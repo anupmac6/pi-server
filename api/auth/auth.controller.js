@@ -52,3 +52,10 @@ exports.changePassword = async (req, res, next) => {
     .then((result) => next(result))
     .catch((err) => next(err));
 };
+
+exports.subscribeBiblePlan = async (req, res, next) => {
+  await auth
+    .subsribeBiblePlan(req.body)
+    .then((result) => next(result))
+    .catch((err) => next(err));
+};

@@ -96,3 +96,19 @@ exports.createBibleInAYearNightJob = async () => {
 exports.deleteBibleInAYearNightJob = async () => {
   return await deleteJob("bible in a year night");
 };
+
+exports.createCheckSubscriberListJob = async () => {
+  agenda.define(
+    "check for new subscribers",
+    { priority: "high", concurrency: 10 },
+    async (job) => {
+      await biblePlanWorker.checkForNewBiblePlanSubscriber(1);
+    }
+  );
+
+  const response = await agenda.every("1 minutes", "check for new subscribers");
+  return response;
+};
+exports.deleteCheckSubscriberListJob = async () => {
+  return await deleteJob("check for new subscribers");
+};

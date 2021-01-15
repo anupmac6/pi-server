@@ -8,6 +8,7 @@ const { BiblePlanHistory } = require("../../models/bibleplanhistory");
 const moment = require("moment");
 const { User } = require("../../models/user");
 const { BiblePlan } = require("../../models/bibleplan");
+const { Subscriber } = require("../../models/subscriber");
 // 1. Get the time worker is running
 // 2. Get all the bible plans with that time preferred
 //     Apply Filters
@@ -206,6 +207,26 @@ exports.bibleInAYearWorker = async (timeToRun) => {
       })
     );
     return biblePlans;
+  } catch (error) {
+    return "fail";
+  }
+};
+exports.checkForNewBiblePlanSubscriber = async () => {
+  try {
+    //* Get all subscribers
+    const subscribers = await Subscriber.find();
+    //* Trigger subscribe method
+    await Promise.all(
+      map(subscribers, async (subscriber) => {
+        try {
+          await biblePlanService.subscribe(subscriber.email);
+        } catch (error) {}
+        await subscriber.remove();
+        return subscriber;
+      })
+    );
+    //* delete the subscribe
+    console.log("check for subscriber");
   } catch (error) {
     return "fail";
   }
