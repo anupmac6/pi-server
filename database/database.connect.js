@@ -11,6 +11,7 @@ module.exports = async () => {
       user: MONGO_DB.user,
       pass: MONGO_DB.password,
       useUnifiedTopology: true,
+      useNewUrlParser: true,
     }
   );
   return response;

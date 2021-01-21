@@ -106,7 +106,7 @@ exports.createCheckSubscriberListJob = async () => {
     }
   );
 
-  const response = await agenda.every("1 minutes", "check for new subscribers");
+  const response = await agenda.every("2 minutes", "check for new subscribers");
   return response;
 };
 exports.deleteCheckSubscriberListJob = async () => {

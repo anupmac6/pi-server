@@ -10,6 +10,7 @@ const { User } = require("../../models/user");
 const { BiblePlan } = require("../../models/bibleplan");
 const { Subscriber } = require("../../models/subscriber");
 const { firestore } = require("../../firebase");
+const { Collection } = require("../../collection");
 // 1. Get the time worker is running
 // 2. Get all the bible plans with that time preferred
 //     Apply Filters
@@ -215,7 +216,7 @@ exports.bibleInAYearWorker = async (timeToRun) => {
 exports.checkForNewBiblePlanSubscriber = async () => {
   try {
     //* Get all subscribers
-    const subscriberRef = firestore.collection("subscriber");
+    const subscriberRef = firestore.collection(Collection.SUBSCRIBER);
     const snapshot = await subscriberRef.get();
     let subscribers = [];
     if (!snapshot.empty) {
@@ -230,7 +231,10 @@ exports.checkForNewBiblePlanSubscriber = async () => {
         try {
           await biblePlanService.subscribe(subscriber.email);
         } catch (error) {}
-        await firestore.collection("subscriber").doc(subscriber.id).delete();
+        await firestore
+          .collection(Collection.SUBSCRIBER)
+          .doc(subscriber.id)
+          .delete();
         return subscriber;
       })
     );

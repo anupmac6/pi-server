@@ -7,6 +7,8 @@ const EMAIL = config.get("Email");
 const sgMail = require("@sendgrid/mail");
 const { validateSubscriber, Subscriber } = require("../../models/subscriber");
 const { subscribe } = require("./auth.routes");
+const { firestore } = require("../../firebase");
+const { Collection } = require("../../collection");
 sgMail.setApiKey(EMAIL.key);
 
 const checkUserExist = async (email) => {
@@ -152,7 +154,11 @@ exports.subsribeBiblePlan = async (request) => {
   if (error) {
     throw error;
   }
-  const subscriber = new Subscriber(request);
-  const response = await subscriber.save();
-  return response;
+  try {
+    await firestore.collection(Collection.SUBSCRIBER).add(request);
+  } catch (error) {
+    throw new Error("Failed to subscribe user, please try again later.");
+  }
+
+  return { subscribed: true };
 };
